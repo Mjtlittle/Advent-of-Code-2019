@@ -56,7 +56,7 @@ fn main() -> io::Result<()> {
 
     let input_string: String = read_to_string("input.txt")?;
 
-    let mut data: Vec<usize> = input_string
+    let data: Vec<usize> = input_string
         .split(",")
         .map(|v| v.parse::<usize>())
         .filter_map(Result::ok)
