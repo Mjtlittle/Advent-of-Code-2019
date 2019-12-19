@@ -1,21 +1,28 @@
-use std::fs::read_to_string;
-use std::io;
-
 mod intcode;
 use intcode::Program;
 
 fn main(){
 
     let mut program = Program::new_from_file("inputs/day_2/input.txt");
-    //program = Program::new_from_string(1,1,1,4,99,5,6,0,99);
+
     program.reset();
-    program.write_data(1, 12);
-    program.write_data(2, 2);
-    program.print_data();
+    program.write_data(1,12);
+    program.write_data(2,2);
+    program.run();
 
-    program.step();
-    program.print_data();
+    println!("Day 2: Part 1 = {}", program.get_data(0));
+    
+    'full_loop: for noun in 0..99 as usize {
+        for verb in 0..99 as usize {
+            program.reset();
+            program.write_data(1, noun as isize);
+            program.write_data(2, verb as isize);
+            program.run();
 
-    println!("{}", program.get_data(0));
-
+            if program.get_data(0) == 19690720 {
+                println!("       Part 2 = {}", 100 * noun + verb);
+                break 'full_loop;
+            }
+        }
+    }
 }

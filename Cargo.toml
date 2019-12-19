@@ -16,3 +16,48 @@ path = "src/day_1.rs"
 [[bin]]
 name = "day_2"
 path = "src/day_2.rs"
+
+[[bin]]
+name = "day_3"
+path = "src/day_3.rs"
+
+[[bin]]
+name = "day_4"
+path = "src/day_4.rs"
+
+[[bin]]
+name = "day_5"
+path = "src/day_5.rs"
+
+[[bin]]
+name = "day_6"
+path = "src/day_6.rs"
+
+[[bin]]
+name = "day_7"
+path = "src/day_7.rs"
+
+[[bin]]
+name = "day_8"
+path = "src/day_8.rs"
+
+[[bin]]
+name = "day_9"
+path = "src/day_9.rs"
+
+[[bin]]
+name = "day_10"
+path = "src/day_10.rs"
+
+[[bin]]
+name = "day_11"
+path = "src/day_11.rs"
+
+[[bin]]
+name = "day_12"
+path = "src/day_12.rs"
+
+[[bin]]
+name = "day_13"
+path = "src/day_13.rs"
+

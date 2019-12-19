@@ -23,7 +23,7 @@ fn recursive_get_fuel(mass: i32) -> i32 {
 fn main() {
     
     // read the masses from the file
-    let file = File::open("inputs/day1/input.txt").expect("Error opening file");
+    let file = File::open("inputs/day_1/input.txt").expect("Error opening file");
     let reader = BufReader::new(file);
     
     // iterate over all modules

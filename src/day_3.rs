@@ -61,41 +61,7 @@ impl Line {
     }
 
     fn intersects(&self, other: &Line) -> Option<Point> {
-        let p0 = &self.a;
-        let p1 = &self.b;
-        let p2 = &other.a;
-        let p3 = &other.b;
 
-        // reformatted from
-        // https://github.com/bit101/CodingMath/blob/master/episode33/main_interactive.js
-
-        let A1 = p1.y - p0.y;
-        let B1 = p0.x - p1.x;
-        let C1 = A1 * p0.x + B1 * p0.y;
-        let A2 = p3.y - p2.y;
-        let B2 = p2.x - p3.x;
-        let C2 = A2 * p2.x + B2 * p2.y;
-
-        let denominator = A1 * B2 - A2 * B1;
-
-        if denominator == 0 {
-            return None;
-        }
-
-        let intersectX = (B2 * C1 - B1 * C2) / denominator;
-        let intersectY = (A1 * C2 - A2 * C1) / denominator;
-        let rx0 = (intersectX - p0.x) / (p1.x - p0.x);
-        let ry0 = (intersectY - p0.y) / (p1.y - p0.y);
-        let rx1 = (intersectX - p2.x) / (p3.x - p2.x);
-        let ry1 = (intersectY - p2.y) / (p3.y - p2.y);
-
-        if ((rx0 >= 0 && rx0 <= 1) || (ry0 >= 0 && ry0 <= 1))
-            && ((rx1 >= 0 && rx1 <= 1) || (ry1 >= 0 && ry1 <= 1))
-        {
-            return Some(Point::new(intersectX, intersectY));
-        } else {
-            return None;
-        }
     }
 }
 
@@ -163,17 +129,23 @@ impl Map {
 }
 
 fn main() {
-    // initialize the map
-    let mut map: Map = Map::new();
+    // // initialize the map
+    // let mut map: Map = Map::new();
 
-    
-    // open file and parse wire lines
-    let file = File::open("input.txt").expect("error opening file");
-    let reader = BufReader::new(file);
-    for line in reader.lines() {
-        let line_string: String = line.expect("error reading line");
-        map.add_wire_string(line_string.as_ref());
-    }
-    let intersections = map.get_intersections();
-    println!("{:?}", intersections);
+    // // open file and parse wire lines
+    // let file = File::open("inputs/day_3/input.txt").expect("error opening file");
+    // let reader = BufReader::new(file);
+    // for line in reader.lines() {
+    //     let line_string: String = line.expect("error reading line");
+    //     map.add_wire_string(line_string.as_ref());
+    // }
+    // let intersections = map.get_intersections();
+    // println!("{:?}", intersections);
+
+    let a = Line::new(Point::new(0,0),Point::new(0,1));
+    let b = Line::new(Point::new(0,0),Point::new(1,0));
+
+    println!("{:?}", a.intersects(&b));
+
 }
+
