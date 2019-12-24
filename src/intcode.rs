@@ -19,7 +19,7 @@ pub enum ProgramCommand {
     Halt,
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub enum ArgumentMode {
     PositionMode,  // 0
     ImmediateMode, // 1
@@ -99,7 +99,6 @@ impl Program {
     fn consume_modal_src(&mut self, argument_mode: ArgumentMode) -> isize {
 
         let value = self.consume();
-
         match argument_mode {
             ArgumentMode::PositionMode => self.get_data(value as usize),
             ArgumentMode::ImmediateMode => value,
@@ -124,7 +123,7 @@ impl Program {
 
         
         let mut value = self.consume();
-        
+
         // consume the last two digits which will be the opcode
         let opcode = value % 100;
         value /= 100;
@@ -253,8 +252,8 @@ impl Program {
     }
 
     pub fn ensure_data_at(&mut self, index: usize) {
-        if self.data.len() < index {
-            for i in 0..(index - self.data.len() + 2) {
+        if self.data.len() <= index {
+            for i in 0..(index - self.data.len() + 1) {
                 self.data.push(0);
             }
         }
@@ -264,6 +263,17 @@ impl Program {
         self.input_buffer.push_back(value);
     }
 
+    pub fn write_ascii(&mut self, string: &str) {
+        for c in string.chars() {
+            self.write(c as isize);
+        }
+    }
+
+    pub fn write_ascii_line(&mut self, string: &str) {
+        self.write_ascii(string);
+        self.write_ascii("\n");
+    }
+
     pub fn read(&mut self) -> isize {
         return self.output_buffer.pop_front().expect("Expected an integer value");
     }
@@ -271,6 +281,12 @@ impl Program {
     pub fn print_output(&mut self) {
         while self.output_buffer.len() > 0 {
             println!("{}", self.read());
+        }
+    }
+
+    pub fn print_ascii_output(&mut self) {
+        while self.output_buffer.len() > 0 {
+            print!("{}", char::from(self.read() as u8));
         }
     }
 

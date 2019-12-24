@@ -1,10 +1,26 @@
 use std::fs::File;
 use std::io::{prelude::*, BufReader};
 use std::f64::consts::PI;
-use std::collections::HashSet;
+use std::collections::HashMap;
+
+
+struct Asteroid {
+    x: usize,
+    y: usize,
+}
+
+impl Asteroid {
+    fn new(x: usize, y: usize) -> Asteroid {
+        Asteroid {
+            x: x,
+            y: y,
+        }
+    }
+}
 
 struct AsteroidMap {
     locations: Vec<Vec<bool>>,
+    asteroids: Vec<Asteroid>,
     width: usize,
     height: usize,
 }
@@ -35,7 +51,8 @@ impl AsteroidMap {
             for chr in line.expect("Expected line").chars() {
                 new_row.push(match chr {
                     '#' => true,
-                    '.' | _ => false,
+                    '.' => false,
+                    _ => true,
                 });
             }
 
@@ -73,69 +90,66 @@ impl AsteroidMap {
 
     fn count_visible_at(&self, tx: usize, ty: usize) -> usize {
 
-        const rad_steps: usize = 3600;
-        
-        let mut asteroids_hit: HashSet<(usize, usize)> = HashSet::new();
+        let mut asteroids: HashSet<isize> = HashSet::new();
 
-        // add current asteroid if exists
-        if self.is_asteroid(tx, ty) {
-            asteroids_hit.insert((tx,ty));
+        for xi in 0..self.width {
+            for yi in 0..self.height {
+                
+                // skip non asteroids
+                if !self.is_asteroid(xi, yi) {
+                    continue;
+                }
+
+                // calculate angle
+                let dx: f64 = (xi as isize - tx as isize) as f64;
+                let dy: f64 = (yi as isize - ty as isize) as f64;
+
+                
+                let theta = dy.atan2(dx);
+                let mut deg_theta: isize = (theta * 18000.0 / PI) as isize;
+
+                // add to asteroids
+                asteroids.insert(deg_theta);
+            }
         }
 
-        let mut angle: f64;
-        for i in 0..rad_steps {
-        
-            angle = (i as f64) / (rad_steps as f64) * PI * 2.0;
-            
-            let result = self.raycast(tx, ty, angle);
-            if result.is_some() {
-                asteroids_hit.insert(result.unwrap());
-            }   
-        }
-
-        return asteroids_hit.len();
+        return asteroids.len();
     }
 
-    fn raycast(&self, tx: usize, ty: usize, angle: f64) -> Option<(usize, usize)> {
+    fn get_most_visible(&self) -> (usize, usize) {
 
-        const step_size: f64 = 0.5;
+        let mut max_current = (0,0);
+        let mut max_visible = 0;
+        
+        for xi in 0..self.width {
+            for yi in 0..self.height {
+                
+                // skip non asteroids
+                if !self.is_asteroid(xi, yi) {
+                    continue;
+                }
 
-        let mut cx: f64 = (tx as f64) + 0.5;
-        let mut cy: f64 = (ty as f64) + 0.5;
+                // count visible
+                let amount = self.count_visible_at(xi, yi);
 
-        // raycast from point tx,ty
-        loop {
-
-            // move the ray
-            cx += angle.cos() * step_size;
-            cy += angle.sin() * step_size;
-
-            // check to see if out of map
-            if !self.is_within(cx, cy){
-                return None;
-            }
-
-            // round the ray to the nearest cell
-            let rcx: usize = cx.floor() as usize;
-            let rcy: usize = cy.floor() as usize;
-
-            // make sure the ray is not inside the testing asteroid
-            if rcx == tx && rcy == ty {
-                continue;
-            }
-
-            // check to see if asteroid hit
-            if self.is_asteroid(rcx, rcy){
-                return Some((rcx, rcy));
+                if amount > max_visible {
+                    max_current = (xi, yi);
+                    max_visible = amount;
+                }
             }
         }
+
+        println!("{}", max_visible);
+        return max_current;
+
     }
 }
 
 
 fn main() {
-    let map = AsteroidMap::new_from_file("inputs/day_10/example_1.txt");
+    let map = AsteroidMap::new_from_file("inputs/day_10/input.txt");
     map.print();
-    println!("{}", map.count_visible_at(0,2));
-    println!("{}", map.count_visible_at(3,4));
+    println!("{:?}", map.get_most_visible());
+    println!("{:?}", map.count_visible_at(11,13));
+    
 }
