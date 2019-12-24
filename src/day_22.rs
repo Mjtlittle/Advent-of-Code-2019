@@ -81,8 +81,6 @@ fn main() {
     
         let parts: Vec<&str> = line_string.rsplitn(2," ").collect();
 
-        println!("{}", parts[1]);
-
         // perform moves
         match parts[1] {
             "deal into new" => {deck.deal_into_new_stack();}
